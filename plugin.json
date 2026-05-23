@@ -3,6 +3,9 @@
   "name": "ArchCyril Clean URL",
   "description": "Clean slugs from NodeBB topic/category URLs via client-side URL interception",
   "url": "https://github.com/chulingera2025/nodebb-plugin-archcyril-cleanurl",
+  "staticDirs": {
+    "lib": "./static/lib"
+  },
   "library": "./library.js",
   "scripts": [
     "./static/lib/main.js"
