@@ -6,11 +6,5 @@
   "library": "./library.js",
   "scripts": [
     "./static/lib/main.js"
-  ],
-  "hooks": [
-    {
-      "hook": "filter:meta.getMetaTags",
-      "method": "filterMetaTags"
-    }
   ]
 }
