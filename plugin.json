@@ -1,0 +1,22 @@
+{
+  "id": "nodebb-plugin-archcyril-clearurl",
+  "name": "ArchCyril Clear URL",
+  "description": "Remove topic/category slugs from NodeBB URLs",
+  "library": "./library.js",
+  "staticDirs": {
+    "lib": "./static/lib"
+  },
+  "scripts": [
+    "lib/main.js"
+  ],
+  "hooks": [
+    {
+      "hook": "static:app.init",
+      "method": "init"
+    },
+    {
+      "hook": "filter:meta.getMetaTags",
+      "method": "filterMetaTags"
+    }
+  ]
+}
