@@ -10,46 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org
 
-      - name: Check version is newer than published
-        run: |
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          PUBLISHED=$(npm view nodebb-plugin-archcyril-clearurl version --registry https://registry.npmjs.org || echo "0.0.0")
-          TAG_VERSION=${GITHUB_REF_NAME#v}
-          echo "Package: $PKG_VERSION, Tag: $TAG_VERSION, Published: $PUBLISHED"
-          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "Tag version ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
-            exit 1
-          fi
-          npx semver-ucm "$TAG_VERSION" > "$PUBLISHED" || true
-          if [ "$TAG_VERSION" = "$PUBLISHED" ]; then
-            echo "Version $TAG_VERSION already published, skipping"
-            exit 0
-          fi
-          # Simple comparison: only publish if tag version > published version
-          TAG_MAJOR=$(echo "$TAG_VERSION" | cut -d. -f1)
-          TAG_MINOR=$(echo "$TAG_VERSION" | cut -d. -f2)
-          TAG_PATCH=$(echo "$TAG_VERSION" | cut -d. -f3)
-          PUB_MAJOR=$(echo "$PUBLISHED" | cut -d. -f1)
-          PUB_MINOR=$(echo "$PUBLISHED" | cut -d. -f2)
-          PUB_PATCH=$(echo "$PUBLISHED" | cut -d. -f3)
-          HIGHER=false
-          [ "$TAG_MAJOR" -gt "$PUB_MAJOR" ] && HIGHER=true
-          [ "$TAG_MAJOR" -eq "$PUB_MAJOR" ] && [ "$TAG_MINOR" -gt "$PUB_MINOR" ] && HIGHER=true
-          [ "$TAG_MAJOR" -eq "$PUB_MAJOR" ] && [ "$TAG_MINOR" -eq "$PUB_MINOR" ] && [ "$TAG_PATCH" -gt "$PUB_PATCH" ] && HIGHER=true
-          if [ "$HIGHER" = false ]; then
-            echo "Tag version ($TAG_VERSION) is not newer than published ($PUBLISHED), skipping"
-            exit 0
-          fi
-          echo "Publishing $TAG_VERSION (newer than $PUBLISHED)"
+      - run: npm ci
 
-      - run: npm publish --access public
+      - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
