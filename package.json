@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-archcyril-clearurl",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Remove topic/category slugs from NodeBB URLs",
   "main": "library.js",
   "license": "MIT",
